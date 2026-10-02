@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   Dimensions,
@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-const { width, height } = Dimensions.get('window');
+// Importa a imagem diretamente para que o bundler do Expo a inclua no build da Web/GitHub Pages
+import logoImg from '../../assets/images/fairpay.png';
 
 export default function LoginScreen() {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
@@ -19,22 +20,27 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Svg width={width} height={180} viewBox={`0 0 ${width} 180`} style={styles.waveTop}>
-        <Path
-          d={`M 0 95 C 30 125, 65 105, 100 88 C 145 67, 165 30, 205 47 C 230 57, 250 80, ${width} 98`}
-          fill="none"
-          stroke="#65D5B0"
-          strokeWidth="1"
-        />
-      </Svg>
+      {/* Onda Superior */}
+      <View style={styles.waveTopContainer}>
+        <Svg width="100%" height="100%" viewBox="0 0 375 120" preserveAspectRatio="none">
+          <Path
+            d="M0,40 Q90,110 180,50 T360,60 L375,60"
+            fill="none"
+            stroke="#65D5B0"
+            strokeWidth="3"
+          />
+        </Svg>
+      </View>
 
       <View style={styles.content}>
+        {/* Logo FairPay */}
         <Image
-          source={require('../../assets/images/fairpay.png')}
+          source={logoImg}
           style={styles.logo}
           resizeMode="contain"
         />
 
+        {/* Campo de Email */}
         <TextInput
           style={styles.input}
           placeholder="insira o seu email"
@@ -43,6 +49,7 @@ export default function LoginScreen() {
           autoCapitalize="none"
         />
 
+        {/* Campo de Senha */}
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
@@ -58,37 +65,65 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Links de Navegação usando <Link> para o GitHub Pages funcionar 100% */}
         <View style={styles.linksContainer}>
-          <TouchableOpacity onPress={() => router.push('/register-step1')}>
-            <Text style={styles.link}>Criar uma conta</Text>
-          </TouchableOpacity>
+          <Link href="/register-step1" asChild>
+            <TouchableOpacity>
+              <Text style={styles.link}>Criar uma conta</Text>
+            </TouchableOpacity>
+          </Link>
 
-          <TouchableOpacity onPress={() => router.push('/forgot-password')}>
-            <Text style={styles.link}>Esqueci minha senha</Text>
-          </TouchableOpacity>
+          <Link href="/forgot-password" asChild>
+            <TouchableOpacity>
+              <Text style={styles.link}>Esqueci minha senha</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
 
+        {/* Botão de Login */}
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
       </View>
 
-      <Svg width={width} height={160} viewBox={`0 0 ${width} 160`} style={styles.waveBottom}>
-        <Path
-          d={`M 0 20 C 35 -5, 65 20, 105 42 C 150 67, 175 70, 210 42 C 235 22, 250 10, ${width} - 5`}
-          fill="none"
-          stroke="#65D5B0"
-          strokeWidth="1"
-        />
-      </Svg>
+      {/* Onda Inferior */}
+      <View style={styles.waveBottomContainer}>
+        <Svg width="100%" height="100%" viewBox="0 0 375 120" preserveAspectRatio="none">
+          <Path
+            d="M0,80 Q100,10 200,80 T375,50"
+            fill="none"
+            stroke="#65D5B0"
+            strokeWidth="3"
+          />
+          <Path
+            d="M0,120 L0,80 Q100,10 200,80 T375,50 L375,120 Z"
+            fill="#001DFF"
+          />
+        </Svg>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFFFFF' },
-  content: { flex: 1, alignItems: 'center', paddingHorizontal: 33, paddingTop: height * 0.22 },
-  logo: { width: 280, height: 180, marginBottom: 25 },
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    width: '100%',
+    maxWidth: 400, // Limita a largura na Web para parecer um telemóvel centrado
+    paddingHorizontal: 25,
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  logo: {
+    width: 240,
+    height: 90,
+    marginBottom: 30,
+  },
   input: {
     width: '100%',
     height: 48,
@@ -96,9 +131,10 @@ const styles = StyleSheet.create({
     borderColor: '#9A8CFF',
     borderRadius: 12,
     paddingHorizontal: 15,
-    fontSize: 13,
+    fontSize: 14,
     color: '#333333',
     marginBottom: 16,
+    backgroundColor: '#FFFFFF',
   },
   passwordContainer: {
     width: '100%',
@@ -109,12 +145,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
+    backgroundColor: '#FFFFFF',
   },
-  passwordInput: { flex: 1, height: '100%', paddingHorizontal: 15, fontSize: 13, color: '#333333' },
-  eyeButton: { width: 40, height: '100%', justifyContent: 'center', alignItems: 'center' },
-  eye: { fontSize: 18, color: '#AAAAAA' },
-  linksContainer: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 28 },
-  link: { fontSize: 11, color: '#555555', textDecorationLine: 'underline' },
+  passwordInput: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 15,
+    fontSize: 14,
+    color: '#333333',
+  },
+  eyeButton: {
+    width: 40,
+    height: '100%',
+    justify: 'center',
+    alignItems: 'center',
+  },
+  eye: {
+    fontSize: 18,
+    color: '#AAAAAA',
+  },
+  linksContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justify: 'space-between',
+    marginBottom: 25,
+  },
+  link: {
+    fontSize: 12,
+    color: '#333333',
+    textDecorationLine: 'underline',
+  },
   button: {
     width: '100%',
     height: 48,
@@ -123,7 +183,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonText: { color: '#FFFFFF', fontSize: 14, fontWeight: 'bold' },
-  waveTop: { position: 'absolute', top: 0, left: 0 },
-  waveBottom: { position: 'absolute', bottom: 0, left: 0 },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  waveTopContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 120,
+    zIndex: 1,
+  },
+  waveBottomContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 120,
+    zIndex: 1,
+  },
 });

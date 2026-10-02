@@ -1,98 +1,129 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const { width, height } = Dimensions.get('window');
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function LoginScreen() {
+  const [senhaVisivel, setSenhaVisivel] = useState(false);
+  const router = useRouter();
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <View style={styles.container}>
+      <Svg width={width} height={180} viewBox={`0 0 ${width} 180`} style={styles.waveTop}>
+        <Path
+          d={`M 0 95 C 30 125, 65 105, 100 88 C 145 67, 165 30, 205 47 C 230 57, 250 80, ${width} 98`}
+          fill="none"
+          stroke="#65D5B0"
+          strokeWidth="1"
+        />
+      </Svg>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <View style={styles.content}>
+        <Image
+          source={require('../../assets/images/fairpay.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        <TextInput
+          style={styles.input}
+          placeholder="insira o seu email"
+          placeholderTextColor="#BDBDBD"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="insira a sua senha"
+            placeholderTextColor="#BDBDBD"
+            secureTextEntry={!senhaVisivel}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setSenhaVisivel(!senhaVisivel)}
+          >
+            <Text style={styles.eye}>{senhaVisivel ? '◉' : '◌'}</Text>
+          </TouchableOpacity>
+        </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+        <View style={styles.linksContainer}>
+          <TouchableOpacity onPress={() => router.push('/register-step1')}>
+            <Text style={styles.link}>Criar uma conta</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.push('/forgot-password')}>
+            <Text style={styles.link}>Esqueci minha senha</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Fazer Login</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Svg width={width} height={160} viewBox={`0 0 ${width} 160`} style={styles.waveBottom}>
+        <Path
+          d={`M 0 20 C 35 -5, 65 20, 105 42 C 150 67, 175 70, 210 42 C 235 22, 250 10, ${width} - 5`}
+          fill="none"
+          stroke="#65D5B0"
+          strokeWidth="1"
+        />
+      </Svg>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  content: { flex: 1, alignItems: 'center', paddingHorizontal: 33, paddingTop: height * 0.22 },
+  logo: { width: 280, height: 180, marginBottom: 25 },
+  input: {
+    width: '100%',
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#9A8CFF',
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    fontSize: 13,
+    color: '#333333',
+    marginBottom: 16,
+  },
+  passwordContainer: {
+    width: '100%',
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#9A8CFF',
+    borderRadius: 12,
     flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    marginBottom: 12,
   },
-  heroSection: {
-    alignItems: 'center',
+  passwordInput: { flex: 1, height: '100%', paddingHorizontal: 15, fontSize: 13, color: '#333333' },
+  eyeButton: { width: 40, height: '100%', justifyContent: 'center', alignItems: 'center' },
+  eye: { fontSize: 18, color: '#AAAAAA' },
+  linksContainer: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 28 },
+  link: { fontSize: 11, color: '#555555', textDecorationLine: 'underline' },
+  button: {
+    width: '100%',
+    height: 48,
+    backgroundColor: '#001DFF',
+    borderRadius: 12,
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    alignItems: 'center',
   },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  buttonText: { color: '#FFFFFF', fontSize: 14, fontWeight: 'bold' },
+  waveTop: { position: 'absolute', top: 0, left: 0 },
+  waveBottom: { position: 'absolute', bottom: 0, left: 0 },
 });

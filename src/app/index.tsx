@@ -1,7 +1,6 @@
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-  Dimensions,
   Image,
   StyleSheet,
   Text,
@@ -11,7 +10,6 @@ import {
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-// Importa a imagem diretamente para que o bundler do Expo a inclua no build da Web/GitHub Pages
 import logoImg from '../../assets/images/fairpay.png';
 
 export default function LoginScreen() {
@@ -65,19 +63,15 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Links de Navegação usando <Link> para o GitHub Pages funcionar 100% */}
+        {/* Links de Navegação usando router.push para evitar erro 404 no GitHub Pages */}
         <View style={styles.linksContainer}>
-          <Link href="/register-step1" asChild>
-            <TouchableOpacity>
-              <Text style={styles.link}>Criar uma conta</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity onPress={() => router.push('/register-step1')}>
+            <Text style={styles.link}>Criar uma conta</Text>
+          </TouchableOpacity>
 
-          <Link href="/forgot-password" asChild>
-            <TouchableOpacity>
-              <Text style={styles.link}>Esqueci minha senha</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity onPress={() => router.push('/forgot-password')}>
+            <Text style={styles.link}>Esqueci minha senha</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Botão de Login */}
@@ -114,7 +108,7 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%',
-    maxWidth: 400, // Limita a largura na Web para parecer um telemóvel centrado
+    maxWidth: 400,
     paddingHorizontal: 25,
     alignItems: 'center',
     zIndex: 2,
@@ -157,7 +151,7 @@ const styles = StyleSheet.create({
   eyeButton: {
     width: 40,
     height: '100%',
-    justify: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   eye: {
@@ -165,9 +159,10 @@ const styles = StyleSheet.create({
     color: '#AAAAAA',
   },
   linksContainer: {
-    width: '100%',
+    width: '100%', // Garante o alinhamento separado nas pontas
     flexDirection: 'row',
     justify: 'space-between',
+    alignItems: 'center',
     marginBottom: 25,
   },
   link: {
